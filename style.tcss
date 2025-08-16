@@ -1,0 +1,34 @@
+Importbar {   
+    background: $boost;
+    height: 5;
+    margin: 1;
+    min-width: 50;
+    padding: 1;
+    align: center middle;
+}
+
+Sortbar {
+    background: $boost;
+    height: 5;
+    margin: 1;
+    min-width: 50;
+    padding: 1;
+    align: center middle;
+}
+
+
+#xl_file {
+    min-width: 20;
+}
+
+#import_label {
+    min-width: 70;
+    text-align: center;
+    content-align: left middle;
+}
+
+#sort_label {
+    min-width: 70;
+    text-align: center;
+    content-align: left middle;
+}
