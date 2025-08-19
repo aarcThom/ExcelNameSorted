@@ -46,6 +46,9 @@ def get_rows(df):
     return headers
 
 
+#### NEED TO DO THIS: https://textual.textualize.io/widgets/data_table/#textual.widgets.DataTable.add_column
+
+
 
 # ======== GUI CLASSES ===========================================================================================================
 
@@ -104,25 +107,24 @@ class ExcelSortApp(App):
             # add the dataframe
             self.mount(DFrame(rows=self.rows))
 
-        if event.button.id == "sort_last" and self.selected_column != None:
-
+        if (event.button.id == "sort_last" or event.button.id == "sort_first") and self.selected_column is not None:
             # sort and update the values
-            self.df = self.df[self.selected_column].apply(lambda row: sort_names(row, True))
+            self.df[self.selected_column] = self.df[self.selected_column].apply(lambda row: sort_names(row, event.button.id == "sort_last"))
             self.rows = get_rows(self.df)
-
             # Find and remove the dataframe
             removeD = self.query_one(DFrame)
             removeD.remove()
-
             # add the sorted table
             self.mount(DFrame(rows=self.rows))
 
 
+            
 
-
-
-    def on_column_selected(self, event: DataTable.ColumnSelected) -> None:
-        self.selected_column = event.column_key
+    async def on_data_table_column_selected(self, event: DataTable.ColumnSelected) -> None:
+        col_key = event.column_key
+        # Get the header value (first cell) from the column
+        self.selected_column = str(self.query_one(DataTable).columns[event.column_key].label)
+        self.notify(f"Selected column: {self.selected_column}")
 
 
     def compose(self) -> ComposeResult:
