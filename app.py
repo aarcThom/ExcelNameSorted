@@ -4,6 +4,7 @@ from textual.containers import HorizontalGroup, VerticalScroll
 from  tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import pandas as pd
+import os
 
 # ========= HELPER FUNCTIONS ======================================================================================================
 
@@ -45,6 +46,16 @@ def get_rows(df):
     headers.extend(df.values.tolist())
     return headers
 
+def write_excel(df: pd.DataFrame, in_path:str):
+    file_name_wit_ext = os.path.basename(in_path)
+    file_name_final = os.path.splitext(file_name_wit_ext)[0] + "_sorted.xlsx"
+    contain_folder = os.path.dirname(in_path)
+    revised_path = contain_folder + "/" + file_name_final
+
+    df.to_excel(revised_path)
+
+    return revised_path
+
 
 #### NEED TO DO THIS: https://textual.textualize.io/widgets/data_table/#textual.widgets.DataTable.add_column
 
@@ -77,6 +88,7 @@ class Sortbar(HorizontalGroup):
         yield Label("Click the column you want to sort then choose first or last name\nCtrl+q to quit.", id="sort_label")
         yield Button ("Sort by Last Name", id="sort_last", variant="success")
         yield Button ("Sort by First Name", id="sort_first", variant="error")
+        yield Button ("Save File", id="save_file", variant="warning")
 
 
 # ======== APP ===========================================================================================================
@@ -116,6 +128,10 @@ class ExcelSortApp(App):
             removeD.remove()
             # add the sorted table
             self.mount(DFrame(rows=self.rows))
+
+        if event.button.id == "save_file" and self.df is not None:
+            test = write_excel(self.df, self.file_path)
+            self.notify(f"Saved to {test}")
 
 
             
